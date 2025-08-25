@@ -1,30 +1,31 @@
 
 variable "region" {
-    default = "us-central1"
+  default = "us-central1"
 }
 
 variable "zone" {
-    default = "us-central1-a"
+  default = "us-central1-a"
 }
 
 variable "project_id" {
-    type = string
-    sensitive = true
+  type      = string
+  description = "The GCP project ID."
+  nullable    = false
 }
 
 #CE
 
 variable "machine_type" {
-    default = "e2-medium"
+  default = "e2-medium"
 }
 
 variable "image" {
-    type = string
-    default = "Debian GNU/Linux 12"
+  type    = string
+  default = "Debian GNU/Linux 12"
 }
 
 variable "nw-ip" {
-    type = string
-    default = "10.1.1.240"
+  type    = string
+  default = "10.1.1.240"
 
 }
