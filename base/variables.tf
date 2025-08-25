@@ -8,7 +8,7 @@ variable "zone" {
 }
 
 variable "project_id" {
-  type      = string
+  type        = string
   description = "The GCP project ID."
   nullable    = false
 }
@@ -21,11 +21,11 @@ variable "machine_type" {
 
 variable "image" {
   type    = string
-  default = "Debian GNU/Linux 12"
+  default = "debian-12"
 }
 
 variable "nw-ip" {
   type    = string
-  default = "10.1.1.240"
+  default = "10.1.0.10"
 
 }

@@ -11,7 +11,7 @@ resource "google_compute_network" "my-vpc" {
 #SUBNET_WORK_ stanza
 resource "google_compute_subnetwork" "my-sn" {
   name          = "my-sn"
-  network       = google_compute_network.my-vpc.network_id
+  network       = google_compute_network.my-vpc.id
   ip_cidr_range = "10.1.0.0/24"
   region        = var.region
 
@@ -22,6 +22,7 @@ resource "google_compute_subnetwork" "my-sn" {
 resource "google_compute_instance" "obs" {
   name         = "obs-ce"
   machine_type = var.machine_type
+  tags         = ["allow-ssh-http-https"]
   zone         = var.zone
   boot_disk {
     initialize_params {
@@ -29,9 +30,9 @@ resource "google_compute_instance" "obs" {
     }
   }
   network_interface {
-    network    = google_compute_network.my-vpc
-    subnetwork = google_compute_subnetwork.my-sn
-    network_ip = "10.1.1.240"
+    network    = google_compute_network.my-vpc.id
+    subnetwork = google_compute_subnetwork.my-sn.id
+    network_ip = var.nw-ip
     access_config {
     }
   }
@@ -41,23 +42,16 @@ resource "google_compute_instance" "obs" {
 
 resource "google_compute_firewall" "fw" {
   name    = "allow"
-  network = google_compute_network.my-vpc
+  network = google_compute_network.my-vpc.id
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "80", "443", ]
+    ports    = ["22", "80", "443"]
   }
   allow {
     protocol = "icmp"
   }
 
-  source_tags = google_compute_instance.obs.tags
-}
-
-output "instance_IP" {
-  value = google_compute_instance.obs.network_interface[1].network_ip
-}
-
-output "instance_name" {
-  value = google_compute_instance.obs.name
+  target_tags   = ["allow-ssh-http-https"]
+  source_ranges = ["0.0.0.0/0"] # Allow from any source
 }
